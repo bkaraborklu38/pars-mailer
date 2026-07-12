@@ -12,9 +12,8 @@ on:
         required: true
         default: '50'
   schedule:
-    # Buraya istediğin zamanı yaz (UTC saati — Türkiye UTC+3)
-    # Örnek: Türkiye 09:00 = UTC 06:00
-    - cron: '0 6 * * *'  # Her gün saat 09:00 Türkiye saati
+    # Türkiye saati 17:14 = UTC 14:14
+    - cron: '39 7 12 7 *'
 
 jobs:
   send:
@@ -39,7 +38,7 @@ jobs:
           TAKIM_MAIL=${{ secrets.TAKIM_MAIL }}
           SHEETS_ID=${{ secrets.SHEETS_ID }}
           SERVICE_ACCT_FILE=service_account.json
-          GUNLUK_LIMIT=${{ github.event.inputs.limit || '50' }}
+          GUNLUK_LIMIT=50
           BEKLEME_MIN_SN=120
           BEKLEME_MAX_SN=300
           GMAIL_APP_PASSWORD=${{ secrets.GMAIL_APP_PASSWORD }}
