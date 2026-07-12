@@ -1,0 +1,4 @@
+gspread
+google-auth
+sib-api-v3-sdk
+python-dotenv
