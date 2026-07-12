@@ -1,0 +1,52 @@
+name: PARS Sponsorluk Mailer
+
+on:
+  workflow_dispatch:
+    inputs:
+      uye:
+        description: 'Üye adı (örn: BERAT, MAHMUT, ENES)'
+        required: true
+        default: 'BERAT'
+      limit:
+        description: 'Gönderilecek mail sayısı'
+        required: true
+        default: '50'
+  schedule:
+    # Buraya istediğin zamanı yaz (UTC saati — Türkiye UTC+3)
+    # Örnek: Türkiye 09:00 = UTC 06:00
+    - cron: '0 6 * * *'  # Her gün saat 09:00 Türkiye saati
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Python kur
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Kütüphaneleri yükle
+        run: pip install gspread google-auth python-dotenv
+
+      - name: .env dosyasını oluştur
+        run: |
+          cat > .env << ENVEOF
+          BREVO_API_KEY=${{ secrets.BREVO_API_KEY }}
+          BREVO_SMTP_USER=${{ secrets.BREVO_SMTP_USER }}
+          TAKIM_MAIL=${{ secrets.TAKIM_MAIL }}
+          SHEETS_ID=${{ secrets.SHEETS_ID }}
+          SERVICE_ACCT_FILE=service_account.json
+          GUNLUK_LIMIT=${{ github.event.inputs.limit || '50' }}
+          BEKLEME_MIN_SN=120
+          BEKLEME_MAX_SN=300
+          GMAIL_APP_PASSWORD=${{ secrets.GMAIL_APP_PASSWORD }}
+          ENVEOF
+
+      - name: service_account.json oluştur
+        run: echo '${{ secrets.SERVICE_ACCOUNT_JSON }}' > service_account.json
+
+      - name: Mailleri gönder
+        run: python mailer.py --limit ${{ github.event.inputs.limit || '50' }} --uye "${{ github.event.inputs.uye || 'BERAT' }}"
