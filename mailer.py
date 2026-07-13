@@ -278,7 +278,7 @@ def durum_guncelle(sheet, row_idx: int, durum: str = "gonderildi", dry_run: bool
 def calistir(dry_run=False, limit=None, sadece_uye=None):
     efektif_limit = limit or GUNLUK_LIMIT
     log.info(f"=== PARS Mailer | limit={efektif_limit} | dry_run={dry_run} | uye={sadece_uye or 'hepsi'} ===")
-
+##
     sh         = sheets_baglan()
     gonderilen = 0
     atlanan    = 0
